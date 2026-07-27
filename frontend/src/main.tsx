@@ -1,28 +1,25 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ConfigProvider } from "antd";
 
-import App from "./App";
+import { MantineProvider } from "@mantine/core";
+import { Notifications } from "@mantine/notifications";
 
-const queryClient = new QueryClient();
+import "@mantine/core/styles.css";
+import "@mantine/notifications/styles.css";
+
+import App from "./App";import { theme } from "./theme";
+
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-    <React.StrictMode>
-        <ConfigProvider
-            theme={{
-                token: {
-                    colorPrimary: "#1677ff",
-                    borderRadius: 8,
-                },
-            }}
+    <BrowserRouter>
+        <MantineProvider
+            defaultColorScheme="light"
+            theme={theme}
         >
-            <QueryClientProvider client={queryClient}>
-                <BrowserRouter>
-                    <App />
-                </BrowserRouter>
-            </QueryClientProvider>
-        </ConfigProvider>
-    </React.StrictMode>
+            <Notifications />
+
+            <App />
+
+        </MantineProvider>
+    </BrowserRouter>
 );

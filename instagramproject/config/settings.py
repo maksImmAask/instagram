@@ -46,10 +46,13 @@ INSTALLED_APPS = [
     "rest_framework",
     "drf_yasg",
     "django_filters",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+
+    "corsheaders.middleware.CorsMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -146,3 +149,20 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 10,
 }
 AUTH_USER_MODEL = "accounts.User"
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+]
+MEDIA_URL = "/media/"
+
+MEDIA_ROOT = BASE_DIR / "media"
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=7),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
+
+    "ROTATE_REFRESH_TOKENS": False,
+    "BLACKLIST_AFTER_ROTATION": False,
+
+    "UPDATE_LAST_LOGIN": True,
+}

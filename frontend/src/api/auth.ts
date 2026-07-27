@@ -1,7 +1,9 @@
 import api from "./axios";
+
 import type {
     LoginFormValues,
     LoginResponse,
+    RegisterData,
     User,
 } from "../types/auth";
 
@@ -11,6 +13,18 @@ export const login = async (
 
     const response = await api.post(
         "/auth/login/",
+        data
+    );
+
+    return response.data;
+};
+
+export const register = async (
+    data: RegisterData
+) => {
+
+    const response = await api.post(
+        "/auth/register/",
         data
     );
 
