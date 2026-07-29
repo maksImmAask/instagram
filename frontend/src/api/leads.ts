@@ -1,18 +1,56 @@
 import api from "./axios";
 
+export interface Manager {
+
+    id: number;
+
+    username: string;
+
+    email: string;
+
+}
+
+export interface Status {
+
+    id: number;
+
+    name: string;
+
+    order: number;
+
+}
+
+export interface Comment {
+
+    id: number;
+
+    username: string;
+
+    text: string;
+
+    created_at: string;
+
+    is_replied: boolean;
+
+}
+
 export interface Lead {
 
     id: number;
 
-    manager: number;
+    manager: Manager | null;
 
-    status: number;
+    status: Status;
 
-    comment: number;
+    comment: Comment;
+
+    created_at: string;
+
+    updated_at: string;
 
 }
 
-export async function getLeads() {
+export async function getLeads(): Promise<Lead[]> {
 
     const response = await api.get("/leads/");
 
@@ -21,16 +59,13 @@ export async function getLeads() {
 }
 
 export async function updateLeadStatus(
-
     id: number,
-
-    status: number,
-
+    statusId: number,
 ) {
 
-    await api.patch(`/leads/${id}/`, {
+    return api.patch(`/leads/${id}/`, {
 
-        status,
+        status_id: statusId,
 
     });
 

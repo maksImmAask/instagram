@@ -1,6 +1,8 @@
 from rest_framework import serializers
 
 from .models import LeadStatus, Lead
+from accounts.models import User
+from instagram.models import Comment
 
 
 class LeadStatusListSerializer(serializers.ListSerializer):
@@ -10,24 +12,39 @@ class LeadStatusListSerializer(serializers.ListSerializer):
             LeadStatus(**item)
             for item in validated_data
         ]
-
         return LeadStatus.objects.bulk_create(statuses)
 
 
-class LeadStatusSerializer(serializers.HyperlinkedModelSerializer):
+class LeadStatusSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LeadStatus
-
         fields = "__all__"
-
         list_serializer_class = LeadStatusListSerializer
 
-        extra_kwargs = {
-            "url": {
-                "view_name": "leadstatus-detail"
-            }
-        }
+
+class ManagerSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = (
+            "id",
+            "username",
+            "email",
+        )
+
+
+class CommentSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Comment
+        fields = (
+            "id",
+            "username",
+            "text",
+            "created_at",
+            "is_replied",
+        )
 
 
 class LeadListSerializer(serializers.ListSerializer):
@@ -37,21 +54,45 @@ class LeadListSerializer(serializers.ListSerializer):
             Lead(**item)
             for item in validated_data
         ]
-
         return Lead.objects.bulk_create(leads)
 
 
-class LeadSerializer(serializers.HyperlinkedModelSerializer):
+class LeadSerializer(serializers.ModelSerializer):
+
+    manager = ManagerSerializer(read_only=True)
+    comment = CommentSerializer(read_only=True)
+    status = LeadStatusSerializer(read_only=True)
+
+    manager_id = serializers.PrimaryKeyRelatedField(
+        source="manager",
+        queryset=User.objects.all(),
+        write_only=True,
+        required=False,
+    )
+
+    comment_id = serializers.PrimaryKeyRelatedField(
+        source="comment",
+        queryset=Comment.objects.all(),
+        write_only=True,
+    )
+
+    status_id = serializers.PrimaryKeyRelatedField(
+        source="status",
+        queryset=LeadStatus.objects.all(),
+        write_only=True,
+    )
 
     class Meta:
         model = Lead
-
-        fields = "__all__"
-
+        fields = (
+            "id",
+            "created_at",
+            "updated_at",
+            "manager",
+            "manager_id",
+            "comment",
+            "comment_id",
+            "status",
+            "status_id",
+        )
         list_serializer_class = LeadListSerializer
-
-        extra_kwargs = {
-            "url": {
-                "view_name": "lead-detail"
-            }
-        }
