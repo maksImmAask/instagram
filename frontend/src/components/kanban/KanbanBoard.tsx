@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-
+import { useRef } from "react";
 import { Center, Flex, Loader } from "@mantine/core";
-
+import { notifications } from "@mantine/notifications";
 import {
     DndContext,
     DragOverlay,
@@ -31,7 +31,7 @@ import {
 export default function KanbanBoard() {
 
     const [loading, setLoading] = useState(true);
-
+    const previousIds = useRef<number[]>([]);
     const [statuses, setStatuses] = useState<LeadStatus[]>([]);
 
     const [leads, setLeads] = useState<Lead[]>([]);
@@ -52,7 +52,7 @@ export default function KanbanBoard() {
 
     useEffect(() => {
 
-        async function load() {
+        async function loadFirst() {
 
             const [leadData, statusData] = await Promise.all([
                 getLeads(),
@@ -60,16 +60,47 @@ export default function KanbanBoard() {
             ]);
 
             setLeads(leadData);
-
             setStatuses(statusData);
-
             setLoading(false);
 
         }
 
-        load();
+        loadFirst();
 
     }, []);
+ useEffect(() => {
+
+    const interval = setInterval(async () => {
+
+        const leadData = await getLeads();
+
+        const oldIds = previousIds.current;
+
+        const newLead = leadData.find(
+            (lead) => !oldIds.includes(lead.id),
+        );
+
+        if (newLead && oldIds.length > 0) {
+
+            notifications.show({
+                title: "Новый лид",
+                message: `${newLead.comment.username} оставил комментарий`,
+                color: "green",
+            });
+
+        }
+
+        previousIds.current = leadData.map(
+            (lead) => lead.id,
+        );
+
+        setLeads(leadData);
+
+    }, 5000);
+
+    return () => clearInterval(interval);
+
+}, []);
 
     const grouped = useMemo(() => {
 

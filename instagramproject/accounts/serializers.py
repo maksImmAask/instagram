@@ -68,7 +68,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         password = validated_data.pop("password")
 
         user = User(
-            role=User.Role.MANAGER,
+            role=User.Role.MANAGER, # type: ignore
             **validated_data
         )
 

@@ -6,6 +6,8 @@ from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
+from instagram.views import instagram_webhook
+from instagram.api import SendInstagramMessageView
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -19,7 +21,14 @@ schema_view = get_schema_view(
 
 
 urlpatterns = [
-
+    path(
+        "webhooks/instagram/",
+        instagram_webhook,
+    ),
+    path(
+        "api/messages/send/",
+        SendInstagramMessageView.as_view(),
+    ),
     path("admin/", admin.site.urls),
 
     path("api/", include("api.urls")),

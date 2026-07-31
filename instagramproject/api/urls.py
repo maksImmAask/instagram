@@ -2,11 +2,12 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 from accounts.views import UserViewSet
-
 from instagram.views import (
     InstagramAccountViewSet,
     PostViewSet,
     CommentViewSet,
+    MessageViewSet,
+
 )
 
 from crm.views import (
@@ -42,7 +43,11 @@ router.register(
     CommentViewSet,
     basename="comment",
 )
-
+router.register(
+    "messages",
+    MessageViewSet,
+    basename="message",
+)
 router.register(
     "statuses",
     LeadStatusViewSet,

@@ -24,9 +24,12 @@ SECRET_KEY = 'django-insecure-%3w(&)hv=&rkm@!82$6f*wlh5x_69z=+cu&bf%1zcmr*_0io77
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-ALLOWED_HOSTS = []
-
+INSTAGRAM_ACCESS_TOKEN = "IGAAMR9PADEcNBZAGFWMlppNnR4THN1MHVQOF95LThIM0ZA6c25JWFpFMWhCMjVJZA3ZAPSzRvaU16OEFQc3NZANW5HWHY0U3RWNURSaWFqbUZAraTdTTHUwakVnaXhDZA0JESkRKMDJRQzdYLU03djVkWjduUk93cVdIaDU4d0ZARdlZAxRQZDZD"
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+    "segment-chatty-district.ngrok-free.dev",
+]
 
 # Application definition
 

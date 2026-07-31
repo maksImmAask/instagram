@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import InstagramAccount, Post, Comment
+from .models import InstagramAccount, Post, Comment, Message
 
 
 class InstagramAccountListSerializer(serializers.ListSerializer):
@@ -82,3 +82,24 @@ class CommentSerializer(serializers.HyperlinkedModelSerializer):
                 "view_name": "comment-detail"
             }
         }
+class MessageListSerializer(serializers.ListSerializer):
+
+    def create(self, validated_data):
+
+        messages = [
+            Message(**item)
+            for item in validated_data
+        ]
+
+        return Message.objects.bulk_create(messages)
+
+
+class MessageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+
+        model = Message
+
+        fields = "__all__"
+
+        list_serializer_class = MessageListSerializer

@@ -1,5 +1,7 @@
 from django.db import models
 
+from crm.models import Lead
+
 
 class Stage(models.TextChoices):
     NEW = "new", "New"
@@ -48,7 +50,10 @@ class Comment(models.Model):
         on_delete=models.CASCADE,
         related_name="comments"
     )
-
+    instagram_user_id = models.CharField(
+        max_length=255,
+        blank=True,
+    )
     instagram_comment_id = models.CharField(
         max_length=255,
         unique=True,
@@ -69,3 +74,39 @@ class Comment(models.Model):
         return f"{self.username}: {self.text[:30]}"
 
 
+class Message(models.Model):
+
+    lead = models.ForeignKey(
+        "crm.Lead",
+        on_delete=models.CASCADE,
+        related_name="messages",
+    )
+
+    instagram_message_id = models.CharField(
+        max_length=255,
+        blank=True,
+    )
+
+    sender_id = models.CharField(
+        max_length=255,
+        blank=True,
+    )
+
+    text = models.TextField()
+
+    is_from_instagram = models.BooleanField(
+        default=True,
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+    )
+
+    def __str__(self):
+        direction = (
+            "Instagram"
+            if self.is_from_instagram
+            else "Manager"
+        )
+
+        return f"{direction}: {self.text[:40]}"
