@@ -6,23 +6,34 @@ def send_instagram_message(
     recipient_id: str,
     text: str,
 ):
-
-    url = "https://graph.instagram.com/v26.0/me/messages"
-
-    payload = {
-        "recipient": {
-            "id": recipient_id,
-        },
-        "message": {
-            "text": text,
-        },
-        "messaging_type": "RESPONSE",
-        "access_token": access_token,
-    }
+    url = "https://graph.facebook.com/v26.0/me/messages"
 
     response = requests.post(
         url,
-        json=payload,
+        params={
+            "access_token": access_token,
+        },
+        json={
+            "recipient": {
+                "id": recipient_id,
+            },
+            "message": {
+                "text": text,
+            },
+            "messaging_type": "RESPONSE",
+        },
     )
 
-    return response.json()
+    print("=" * 60)
+    print("STATUS:", response.status_code)
+    print("BODY:")
+    print(response.text)
+    print("=" * 60)
+
+    try:
+        return response.json()
+    except Exception:
+        return {
+            "status_code": response.status_code,
+            "text": response.text,
+        }

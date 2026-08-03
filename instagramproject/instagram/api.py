@@ -4,9 +4,8 @@ from rest_framework import status
 
 from crm.models import Lead
 from instagram.models import InstagramAccount
+
 from .services.messages import send_instagram_message
-
-
 class SendInstagramMessageView(APIView):
 
     def post(self, request):
@@ -15,17 +14,37 @@ class SendInstagramMessageView(APIView):
         text = request.data.get("text")
 
         if not lead_id or not text:
+
             return Response(
-                {"error": "lead and text required"},
+                {
+                    "error": "lead and text required",
+                },
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        lead = Lead.objects.get(id=lead_id)
+        try:
+
+            lead = Lead.objects.get(pk=lead_id)
+
+        except Lead.DoesNotExist:
+
+            return Response(
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
         account = InstagramAccount.objects.first()
 
+        if account is None:
+
+            return Response(
+                {
+                    "error": "Instagram account not found",
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         result = send_instagram_message(
-            access_token=account.access_token, # pyright: ignore[reportOptionalMemberAccess]
+            access_token=account.access_token,
             recipient_id=lead.comment.instagram_user_id,
             text=text,
         )

@@ -5,6 +5,11 @@ from .models import (
     LeadStatus,
     Lead,
 )
+from rest_framework.decorators import action
+from rest_framework.response import Response
+
+from instagram.models import Message
+from instagram.serializers import MessageSerializer
 
 from .serializers import (
     LeadStatusSerializer,
@@ -36,7 +41,6 @@ class LeadStatusViewSet(ModelViewSet):
             "request": self.request
         }
 
-
 class LeadViewSet(ModelViewSet):
 
     queryset = Lead.objects.select_related(
@@ -66,5 +70,27 @@ class LeadViewSet(ModelViewSet):
 
     def get_serializer_context(self):
         return {
-            "request": self.request
+            "request": self.request,
         }
+
+    @action(
+        detail=True,
+        methods=["get"],
+    )
+    def messages(self, request, pk=None):
+
+        lead = self.get_object()
+
+        queryset = lead.messages.order_by(
+            "created_at",
+        )
+
+        serializer = MessageSerializer(
+            queryset,
+            many=True,
+            context={
+                "request": request,
+            },
+        )
+
+        return Response(serializer.data)

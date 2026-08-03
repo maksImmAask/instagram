@@ -5,7 +5,7 @@ from rest_framework import permissions
 
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
-
+from instagram.api import SendInstagramMessageView
 from instagram.views import instagram_webhook
 from instagram.api import SendInstagramMessageView
 
@@ -34,7 +34,10 @@ urlpatterns = [
     path("api/", include("api.urls")),
 
     path("api/auth/", include("accounts.urls")),
-
+    path(
+        "api/send-message/",
+        SendInstagramMessageView.as_view(),
+    ),
     path(
         "swagger/",
         schema_view.with_ui("swagger", cache_timeout=0),

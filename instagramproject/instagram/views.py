@@ -151,6 +151,8 @@ def instagram_webhook(request):
                 field = change.get("field")
                 value = change.get("value", {})
 
+                # ---------------- COMMENTS ----------------
+
                 if field == "comments":
 
                     post_id = value["media"]["id"]
@@ -190,6 +192,8 @@ def instagram_webhook(request):
                             status=status,
                         )
 
+                # ---------------- DIRECT MESSAGES ----------------
+
                 elif field == "messages":
 
                     sender_id = value["sender"]["id"]
@@ -205,7 +209,7 @@ def instagram_webhook(request):
                             instagram_user_id=sender_id,
                         )
 
-                        lead = comment.lead
+                        lead = comment.lead # type: ignore
 
                     except Comment.DoesNotExist:
                         continue
@@ -217,6 +221,7 @@ def instagram_webhook(request):
                         text=text,
                         is_from_instagram=True,
                     )
+
 
 
         return HttpResponse("EVENT_RECEIVED")

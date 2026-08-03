@@ -8,7 +8,12 @@ import {
     Stack,
     Text,
 } from "@mantine/core";
+import { useEffect, useState } from "react";
 
+import {
+    getLeadMessages,
+    type Message,
+} from "../../api/messages";
 import type { Lead } from "../../api/leads";
 
 interface Props {
@@ -30,7 +35,16 @@ export default function LeadDrawer({
     lead,
 
 }: Props) {
+    const [messages, setMessages] = useState<Message[]>([]);
+        useEffect(() => {
 
+        if (!lead) return;
+
+        getLeadMessages(
+            lead.id,
+        ).then(setMessages);
+
+    }, [lead]);
     if (!lead) return null;
 
     return (
@@ -132,11 +146,65 @@ export default function LeadDrawer({
 
                 <Divider />
 
-                <Button fullWidth>
+<Text fw={700}>
+    Chat
+</Text>
 
-                    Send Instagram Message
+<Stack
+    gap="xs"
+    h={250}
+    style={{
+        overflowY: "auto",
+    }}
+>
 
-                </Button>
+    {messages.length === 0 && (
+
+        <Text
+            size="sm"
+            c="dimmed"
+        >
+            No messages
+        </Text>
+
+    )}
+
+    {messages.map((message) => (
+
+        <Group
+            key={message.id}
+            justify={
+                message.is_from_instagram
+                    ? "flex-start"
+                    : "flex-end"
+            }
+        >
+
+            <Badge
+                variant={
+                    message.is_from_instagram
+                        ? "light"
+                        : "filled"
+                }
+                size="lg"
+            >
+                {message.text}
+            </Badge>
+
+        </Group>
+
+    ))}
+
+</Stack>
+
+<Button
+    mt="md"
+    fullWidth
+>
+
+    Send Instagram Message
+
+</Button>
 
             </Stack>
 
