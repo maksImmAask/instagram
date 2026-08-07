@@ -3,6 +3,7 @@ import {
     Badge,
     Card,
     Group,
+    Image,
     Stack,
     Text,
 } from "@mantine/core";
@@ -79,6 +80,15 @@ export default function LeadCard({
             }}
 
         >
+{lead.comment.post?.image && (
+    <Image
+        src={lead.comment.post.image}
+        h={180}
+        radius="md"
+        mb="md"
+        fit="cover"
+    />
+)}
 
             <Group justify="space-between">
 
@@ -125,7 +135,13 @@ export default function LeadCard({
     <Text size="sm">
         {lead.comment.text}
     </Text>
-
+<Text
+    size="xs"
+    c="dimmed"
+    lineClamp={2}
+>
+    {lead.comment.post.caption}
+</Text>
 </Stack>
 
             <Group

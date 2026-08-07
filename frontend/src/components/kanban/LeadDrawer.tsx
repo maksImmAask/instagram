@@ -5,6 +5,7 @@ import {
     Divider,
     Drawer,
     Group,
+    Image,
     Stack,
     Text,
 } from "@mantine/core";
@@ -64,7 +65,26 @@ export default function LeadDrawer({
         >
 
             <Stack>
+{lead.comment.post?.image && (
+    <>
+        <Image
+            src={lead.comment.post.image}
+            radius="md"
+            h={220}
+            fit="cover"
+        />
 
+        <Text
+            size="sm"
+            c="dimmed"
+            lineClamp={2}
+        >
+            {lead.comment.post.caption}
+        </Text>
+
+        <Divider />
+    </>
+)}
                 <Group>
 
                     <Avatar

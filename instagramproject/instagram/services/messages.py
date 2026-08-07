@@ -1,21 +1,33 @@
 import requests
 
+from instagram.models import Message
+
 
 def send_instagram_message(
-    access_token: str,
-    recipient_id: str,
-    text: str,
+    lead,
+    text,
 ):
+    account = lead.comment.post.account
+
     url = "https://graph.facebook.com/v26.0/me/messages"
+
+    print("=" * 60)
+    print("ACCESS TOKEN:")
+    print(repr(account.access_token))
+    print("=" * 60)
+
+    print("RECIPIENT:")
+    print(repr(lead.comment.instagram_user_id))
+    print("=" * 60)
 
     response = requests.post(
         url,
         params={
-            "access_token": access_token,
+            "access_token": account.access_token,
         },
         json={
             "recipient": {
-                "id": recipient_id,
+                "id": lead.comment.instagram_user_id,
             },
             "message": {
                 "text": text,
@@ -30,10 +42,18 @@ def send_instagram_message(
     print(response.text)
     print("=" * 60)
 
-    try:
-        return response.json()
-    except Exception:
-        return {
-            "status_code": response.status_code,
-            "text": response.text,
-        }
+    data = response.json()
+
+    if response.status_code == 200:
+
+        message = Message.objects.create(
+            lead=lead,
+            sender_id="manager",
+            text=text,
+            is_from_instagram=False,
+            instagram_message_id=data.get("message_id", ""),
+        )
+
+        return message
+
+    raise Exception(data)

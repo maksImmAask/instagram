@@ -4,7 +4,8 @@ from .models import LeadStatus, Lead
 from accounts.models import User
 from instagram.models import Comment
 
-
+from instagram.models import Comment
+from instagram.serializers import CommentSerializer
 class LeadStatusListSerializer(serializers.ListSerializer):
 
     def create(self, validated_data):
@@ -34,17 +35,6 @@ class ManagerSerializer(serializers.ModelSerializer):
         )
 
 
-class CommentSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Comment
-        fields = (
-            "id",
-            "username",
-            "text",
-            "created_at",
-            "is_replied",
-        )
 
 
 class LeadListSerializer(serializers.ListSerializer):

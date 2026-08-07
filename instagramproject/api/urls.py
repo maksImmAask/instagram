@@ -9,7 +9,7 @@ from instagram.views import (
     MessageViewSet,
 
 )
-
+from instagram.api import SendInstagramMessageView, SyncPostsView
 from crm.views import (
     LeadStatusViewSet,
     LeadViewSet,
@@ -68,6 +68,19 @@ router.register(
 
 
 urlpatterns = [
+    path(
+        "posts/sync/",
+        SyncPostsView.as_view(),
+        name="sync-posts",
+    ),
+
+    path(
+        "send-message/",
+        SendInstagramMessageView.as_view(),
+        name="send-message",
+    ),
+
+
     path(
         "",
         include(router.urls),

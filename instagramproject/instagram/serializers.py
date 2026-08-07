@@ -68,7 +68,21 @@ class CommentListSerializer(serializers.ListSerializer):
         return Comment.objects.bulk_create(comments)
 
 
+class PostShortSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Post
+        fields = [
+            "id",
+            "instagram_id",
+            "caption",
+            "image",
+        ]
 class CommentSerializer(serializers.HyperlinkedModelSerializer):
+
+    post = PostShortSerializer(
+        read_only=True,
+    )
 
     class Meta:
         model = Comment
